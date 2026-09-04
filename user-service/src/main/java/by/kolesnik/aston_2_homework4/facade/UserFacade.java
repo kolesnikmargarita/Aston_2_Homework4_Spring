@@ -1,5 +1,6 @@
 package by.kolesnik.aston_2_homework4.facade;
 
+import by.kolesnik.aston_2_homework4.publisher.UserEventPublisher;
 import by.kolesnik.aston_2_homework4.dto.CreateUserDto;
 import by.kolesnik.aston_2_homework4.dto.FullyUpdateUserDto;
 import by.kolesnik.aston_2_homework4.dto.GetUserDto;
@@ -25,6 +26,7 @@ public class UserFacade {
     private final UserService userService;
     private final UserMapper userMapper;
     private final UserValidation userValidation;
+    private final UserEventPublisher eventPublisher;
 
     public GetUserDto findById(Long id) {
         log.info("Finding user: {}", id);
@@ -62,6 +64,9 @@ public class UserFacade {
 
         User created = userService.create(user);
         log.info("User created with id: {}", created.getId());
+
+        eventPublisher.publishUserCreated(created);
+        log.info("Message for created user with id:{} and email:{} was sand to Kafka",created.getId(), created.getEmail());
 
         return userMapper.toDto(created);
     }
@@ -111,9 +116,16 @@ public class UserFacade {
 
 
     public void delete(Long id) {
-        userValidation.validateUserExists(id);
         log.info("Deleting user: {}", id);
+
+        userValidation.validateId(id);
+        User removableUser = userService.findById(id);
+        log.info("Removable user found: {}", removableUser.getId());
+
         userService.delete(id);
         log.info("User deleted: {}", id);
+
+        eventPublisher.publishUserDeleted(removableUser);
+        log.info("Message for deleted user with id:{} and email:{} was sand to Kafka", removableUser.getId(), removableUser.getEmail());
     }
 }

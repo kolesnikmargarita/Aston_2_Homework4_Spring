@@ -28,14 +28,6 @@ public class UserValidation {
         }
     }
 
-    // Проверка существования пользователя
-    public void validateUserExists(Long id) {
-        validateId(id);
-        if (!userRepository.existsById(id)) {
-            throw new UserNotFoundException("User not found with id: " + id);
-        }
-    }
-
     // Проверка уникальности email
     public void validateEmailUnique(String email) {
         if (userRepository.existsByEmail(email)) {
