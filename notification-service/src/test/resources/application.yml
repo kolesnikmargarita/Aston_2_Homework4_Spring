@@ -1,0 +1,12 @@
+spring:
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        # ПРАВИЛЬНО: Ключ пишется целиком в кавычках через точки
+        "spring.json.trusted.packages": "by.kolesnik.aston_2_homework4.dto"
