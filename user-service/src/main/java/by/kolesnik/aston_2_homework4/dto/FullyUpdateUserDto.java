@@ -3,7 +3,6 @@ package by.kolesnik.aston_2_homework4.dto;
 import by.kolesnik.aston_2_homework4.constant.ValidationConstant;
 import jakarta.validation.constraints.*;
 import lombok.Builder;
-import lombok.Data;
 
 @Builder
 public record FullyUpdateUserDto (

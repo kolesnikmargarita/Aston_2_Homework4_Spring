@@ -1,6 +1,5 @@
 package by.kolesnik.aston_2_homework4.consumer;
 
-import by.kolesnik.aston_2_homework4.enums.Operations;
 import by.kolesnik.aston_2_homework4.dto.UserEvent;
 import by.kolesnik.aston_2_homework4.service.NotificationService;
 import lombok.RequiredArgsConstructor;
