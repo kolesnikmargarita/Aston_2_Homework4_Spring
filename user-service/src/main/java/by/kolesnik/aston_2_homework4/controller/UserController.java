@@ -1,5 +1,6 @@
 package by.kolesnik.aston_2_homework4.controller;
 
+import by.kolesnik.aston_2_homework4.controller.openapi.UserOpenApi;
 import by.kolesnik.aston_2_homework4.dto.*;
 import by.kolesnik.aston_2_homework4.facade.UserFacade;
 import jakarta.validation.Valid;
@@ -14,40 +15,46 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserOpenApi {
 
     private final UserFacade userFacade;
 
+    @Override
     @PostMapping
     public GetUserDto create(@RequestBody @Valid CreateUserDto dto) {
-        log.info("Creating user with name: {}", dto.getName());
+        log.info("Creating user with name: {}", dto.name());
         return userFacade.create(dto);
     }
 
+    @Override
     @GetMapping
     public List<GetUserDto> readAll() {
         log.info("Reading all users");
         return userFacade.findAll();
     }
 
+    @Override
     @GetMapping("/{id}")
     public GetUserDto readById(@PathVariable Long id) {
         log.info("Reading user with id: {}", id);
         return userFacade.findById(id);
     }
 
+    @Override
     @PatchMapping("/{id}")
     public GetUserDto updatePartially(@PathVariable Long id, @RequestBody @Valid PartiallyUpdateUserDto dto) {
         log.info("Partial updating user with id: {}", id);
         return userFacade.updatePartially(id, dto);
     }
 
+    @Override
     @PutMapping("/{id}")
     public GetUserDto updateFully(@PathVariable Long id, @RequestBody @Valid FullyUpdateUserDto dto) {
         log.info("Full updating user with id: {}", id);
         return userFacade.updateFully(id, dto);
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Deleting user with id: {}", id);
