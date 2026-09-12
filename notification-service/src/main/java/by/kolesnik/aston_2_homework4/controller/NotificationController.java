@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/api/notifications")
 @RequiredArgsConstructor
 public class NotificationController {
@@ -19,9 +19,9 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @PostMapping("/send")
-    public ResponseEntity<Void> sendEmail(@RequestBody SendEmailRequest request) {
-        log.info("Received request to send email to: {}", request.getEmail());
-        notificationService.sendEmail(request.getEmail(), request.getMessage());
+    public ResponseEntity<Void> sendEmail(@RequestBody @Valid SendEmailRequest request) {
+        log.info("Received request to send email to: {}", request.email());
+        notificationService.sendEmail(request.email(), request.message());
         return ResponseEntity.ok().build();
     }
 }
