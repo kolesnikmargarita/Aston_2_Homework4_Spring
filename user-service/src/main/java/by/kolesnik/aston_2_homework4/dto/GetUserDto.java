@@ -1,15 +1,15 @@
 package by.kolesnik.aston_2_homework4.dto;
 
-import lombok.Data;
+import lombok.Builder;
 
 import java.time.LocalDate;
 
-@Data
-public class GetUserDto {
+@Builder
+public record GetUserDto (
 
-    private Long id;
-    private String name;
-    private String email;
-    private int age;
-    private LocalDate created_at;
-}
+    Long id,
+    String name,
+    String email,
+    int age,
+    LocalDate created_at
+) {}

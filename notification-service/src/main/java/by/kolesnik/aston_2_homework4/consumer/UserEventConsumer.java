@@ -21,12 +21,6 @@ public class UserEventConsumer {
     )
     public void consumer(UserEvent event) {
         log.info("Received event: {}", event);
-
-        String message = switch (event.operation()) {
-            case Operations.CREATE -> "Здравствуйте! Ваш аккаунт на сайте http://localhost:8080/users был успешно создан.";
-            case Operations.DELETE -> "Здравствуйте! Ваш аккаунт был удалён.";
-        };
-
-        notificationService.sendEmail(event.email(), message);
+        notificationService.sendEmail(event.email(), event.operation().getMessage());
     }
 }

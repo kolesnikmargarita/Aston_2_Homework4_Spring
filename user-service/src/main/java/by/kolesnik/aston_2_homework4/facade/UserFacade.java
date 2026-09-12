@@ -54,7 +54,7 @@ public class UserFacade {
     public GetUserDto create(CreateUserDto dto) {
         log.info("Creating user");
 
-        userValidation.validateEmailUnique(dto.getEmail());
+        userValidation.validateEmailUnique(dto.email());
 
         User user = userMapper.toEntity(dto);
         if (user.getId() != null) {
@@ -66,7 +66,7 @@ public class UserFacade {
         log.info("User created with id: {}", created.getId());
 
         eventPublisher.publishUserCreated(created);
-        log.info("Message for created user with id:{} and email:{} was sand to Kafka",created.getId(), created.getEmail());
+        log.info("Message for created user with id:{} and email:{} was sent to Kafka",created.getId(), created.getEmail());
 
         return userMapper.toDto(created);
     }
@@ -75,8 +75,8 @@ public class UserFacade {
         log.info("Partial updating user: {}", id);
 
         userValidation.validateId(id);
-        if(dto.getEmail() != null && !dto.getEmail().isBlank()) {
-            userValidation.validateEmailUniqueForUpdate(dto.getEmail(), id);
+        if(dto.email() != null && !dto.email().isBlank()) {
+            userValidation.validateEmailUniqueForUpdate(dto.email(), id);
         }
 
         try {
@@ -97,7 +97,7 @@ public class UserFacade {
         log.info("Full updating user: {}", id);
 
         userValidation.validateId(id);
-        userValidation.validateEmailUniqueForUpdate(dto.getEmail(), id);
+        userValidation.validateEmailUniqueForUpdate(dto.email(), id);
 
         try {
             User changeableUser = userService.findById(id);

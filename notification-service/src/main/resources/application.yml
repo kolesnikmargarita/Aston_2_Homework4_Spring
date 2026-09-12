@@ -4,8 +4,9 @@ spring:
   application:
     name: Aston_2_Homework4
   kafka:
-    bootstrap-servers: localhost:9092
+
     consumer:
+      bootstrap-servers: localhost:9092
       group-id: notification-service
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer

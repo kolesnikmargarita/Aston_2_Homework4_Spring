@@ -40,17 +40,21 @@ class UserControllerTest {
 
     @Test
     void createUser_ShouldReturnCreatedUser() throws Exception {
-        CreateUserDto createDto = new CreateUserDto();
-        createDto.setName("John");
-        createDto.setEmail("john@test.com");
-        createDto.setAge(25);
+        CreateUserDto createDto =
+                CreateUserDto.builder()
+                        .name("John")
+                        .email("john@test.com")
+                        .age(25)
+                        .build();
 
-        GetUserDto responseDto = new GetUserDto();
-        responseDto.setId(1L);
-        responseDto.setName("John");
-        responseDto.setEmail("john@test.com");
-        responseDto.setAge(25);
-        responseDto.setCreated_at(LocalDate.now());
+        GetUserDto responseDto =
+                GetUserDto.builder()
+                        .id(1L)
+                        .name("John")
+                        .email("john@test.com")
+                        .age(25)
+                        .created_at(LocalDate.now())
+                        .build();
 
         when(userFacade.create(any(CreateUserDto.class))).thenReturn(responseDto);
 
@@ -66,10 +70,12 @@ class UserControllerTest {
 
     @Test
     void createUser_WithDuplicateEmail_ShouldReturnConflict() throws Exception {
-        CreateUserDto createDto = new CreateUserDto();
-        createDto.setName("John");
-        createDto.setEmail("existing@test.com");
-        createDto.setAge(25);
+        CreateUserDto createDto =
+                CreateUserDto.builder()
+                        .name("John")
+                        .email("existing@test.com")
+                        .age(25)
+                        .build();
 
         when(userFacade.create(any(CreateUserDto.class)))
                 .thenThrow(new DuplicateEmailException("Email already exists: existing@test.com"));
@@ -83,10 +89,12 @@ class UserControllerTest {
 
     @Test
     void createUser_WithInvalidAge_ShouldReturnBadRequest() throws Exception {
-        CreateUserDto createDto = new CreateUserDto();
-        createDto.setName("John");
-        createDto.setEmail("john@test.com");
-        createDto.setAge(-5);
+        CreateUserDto createDto =
+                CreateUserDto.builder()
+                        .name("John")
+                        .email("john@test.com")
+                        .age(-5)
+                        .build();
 
         mockMvc.perform(post(baseUrl)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -96,17 +104,21 @@ class UserControllerTest {
 
     @Test
     void readAllUsers_ShouldReturnListOfUsers() throws Exception {
-        GetUserDto user1 = new GetUserDto();
-        user1.setId(1L);
-        user1.setName("John");
-        user1.setEmail("john@test.com");
-        user1.setAge(25);
+        GetUserDto user1 =
+                GetUserDto.builder()
+                        .id(1L)
+                        .name("John")
+                        .email("john@test.com")
+                        .age(25)
+                        .build();
 
-        GetUserDto user2 = new GetUserDto();
-        user2.setId(2L);
-        user2.setName("Alice");
-        user2.setEmail("alice@test.com");
-        user2.setAge(30);
+        GetUserDto user2 =
+                GetUserDto.builder()
+                        .id(2L)
+                        .name("Alice")
+                        .email("alice@test.com")
+                        .age(30)
+                        .build();
 
         when(userFacade.findAll()).thenReturn(List.of(user1, user2));
 
@@ -118,12 +130,14 @@ class UserControllerTest {
 
     @Test
     void readUserById_WhenExists_ShouldReturnUser() throws Exception {
-        GetUserDto responseDto = new GetUserDto();
-        responseDto.setId(1L);
-        responseDto.setName("John");
-        responseDto.setEmail("john@test.com");
-        responseDto.setAge(25);
-        responseDto.setCreated_at(LocalDate.now());
+        GetUserDto responseDto =
+                GetUserDto.builder()
+                        .id(1L)
+                        .name("John")
+                        .email("john@test.com")
+                        .age(25)
+                        .created_at(LocalDate.now())
+                        .build();
 
         when(userFacade.findById(1L)).thenReturn(responseDto);
 
@@ -145,15 +159,19 @@ class UserControllerTest {
 
     @Test
     void partialUpdateUser_WhenExists_ShouldReturnUpdatedUser() throws Exception {
-        PartiallyUpdateUserDto updateDto = new PartiallyUpdateUserDto();
-        updateDto.setName("John Updated");
+        PartiallyUpdateUserDto updateDto =
+                PartiallyUpdateUserDto.builder()
+                        .name("John Updated")
+                        .build();
 
-        GetUserDto responseDto = new GetUserDto();
-        responseDto.setId(1L);
-        responseDto.setName("John Updated");
-        responseDto.setEmail("john@test.com");
-        responseDto.setAge(25);
-        responseDto.setCreated_at(LocalDate.now());
+        GetUserDto responseDto =
+                GetUserDto.builder()
+                        .id(1L)
+                        .name("John Updated")
+                        .email("john@test.com")
+                        .age(25)
+                        .created_at(LocalDate.now())
+                        .build();
 
         when(userFacade.updatePartially(eq(1L), any(PartiallyUpdateUserDto.class))).thenReturn(responseDto);
 
@@ -167,17 +185,21 @@ class UserControllerTest {
 
     @Test
     void fullUpdateUser_WhenExists_ShouldReturnUpdatedUser() throws Exception {
-        FullyUpdateUserDto updateDto = new FullyUpdateUserDto();
-        updateDto.setName("John Full");
-        updateDto.setEmail("johnfull@test.com");
-        updateDto.setAge(30);
+        FullyUpdateUserDto updateDto =
+                FullyUpdateUserDto.builder()
+                        .name("John Full")
+                        .email("johnfull@test.com")
+                        .age(30)
+                        .build();
 
-        GetUserDto responseDto = new GetUserDto();
-        responseDto.setId(1L);
-        responseDto.setName("John Full");
-        responseDto.setEmail("johnfull@test.com");
-        responseDto.setAge(30);
-        responseDto.setCreated_at(LocalDate.now());
+        GetUserDto responseDto =
+                GetUserDto.builder()
+                        .id(1L)
+                        .email("johnfull@test.com")
+                        .name("John Full")
+                        .age(30)
+                        .created_at(LocalDate.now())
+                        .build();
 
         when(userFacade.updateFully(eq(1L), any(FullyUpdateUserDto.class))).thenReturn(responseDto);
 
