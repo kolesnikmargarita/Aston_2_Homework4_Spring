@@ -1,5 +1,6 @@
 package by.kolesnik.aston_2_homework4.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.hateoas.RepresentationModel;
@@ -13,5 +14,6 @@ public class UserModel extends RepresentationModel<UserModel> {
     private String name;
     private String email;
     private int age;
+    @JsonProperty("created_at")
     private LocalDate createdAt;
 }
