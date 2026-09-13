@@ -1,53 +1,61 @@
 package by.kolesnik.aston_2_homework4.controller;
 
+import by.kolesnik.aston_2_homework4.assembler.UserModelAssembler;
+import by.kolesnik.aston_2_homework4.controller.openapi.UserOpenApi;
 import by.kolesnik.aston_2_homework4.dto.*;
 import by.kolesnik.aston_2_homework4.facade.UserFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserOpenApi {
 
     private final UserFacade userFacade;
+    private final UserModelAssembler userModelAssembler;
 
+    @Override
     @PostMapping
-    public GetUserDto create(@RequestBody @Valid CreateUserDto dto) {
-        log.info("Creating user with name: {}", dto.getName());
-        return userFacade.create(dto);
+    public UserModel create(@RequestBody @Valid CreateUserDto dto) {
+        log.info("Creating user with name: {}", dto.name());
+        return userModelAssembler.toModel(userFacade.create(dto));
     }
 
+    @Override
     @GetMapping
-    public List<GetUserDto> readAll() {
+    public CollectionModel<UserModel> readAll() {
         log.info("Reading all users");
-        return userFacade.findAll();
+        return userModelAssembler.toCollectionModel(userFacade.findAll());
     }
 
+    @Override
     @GetMapping("/{id}")
-    public GetUserDto readById(@PathVariable Long id) {
+    public UserModel readById(@PathVariable Long id) {
         log.info("Reading user with id: {}", id);
-        return userFacade.findById(id);
+        return userModelAssembler.toModel(userFacade.findById(id));
     }
 
+    @Override
     @PatchMapping("/{id}")
-    public GetUserDto updatePartially(@PathVariable Long id, @RequestBody @Valid PartiallyUpdateUserDto dto) {
+    public UserModel updatePartially(@PathVariable Long id, @RequestBody @Valid PartiallyUpdateUserDto dto) {
         log.info("Partial updating user with id: {}", id);
-        return userFacade.updatePartially(id, dto);
+        return userModelAssembler.toModel(userFacade.updatePartially(id, dto));
     }
 
+    @Override
     @PutMapping("/{id}")
-    public GetUserDto updateFully(@PathVariable Long id, @RequestBody @Valid FullyUpdateUserDto dto) {
+    public UserModel updateFully(@PathVariable Long id, @RequestBody @Valid FullyUpdateUserDto dto) {
         log.info("Full updating user with id: {}", id);
-        return userFacade.updateFully(id, dto);
+        return userModelAssembler.toModel(userFacade.updateFully(id, dto));
     }
 
+    @Override
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         log.info("Deleting user with id: {}", id);

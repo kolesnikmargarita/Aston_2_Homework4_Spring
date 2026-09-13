@@ -1,5 +1,6 @@
 package by.kolesnik.aston_2_homework4.controller;
 
+import by.kolesnik.aston_2_homework4.assembler.UserModelAssembler;
 import by.kolesnik.aston_2_homework4.dto.CreateUserDto;
 import by.kolesnik.aston_2_homework4.dto.FullyUpdateUserDto;
 import by.kolesnik.aston_2_homework4.dto.GetUserDto;
@@ -8,9 +9,11 @@ import by.kolesnik.aston_2_homework4.exception.DuplicateEmailException;
 import by.kolesnik.aston_2_homework4.exception.UserNotFoundException;
 import by.kolesnik.aston_2_homework4.facade.UserFacade;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,12 +29,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(UserController.class)
+@Import(UserModelAssembler.class)
 class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
     @MockitoBean
     private UserFacade userFacade;
@@ -40,21 +44,19 @@ class UserControllerTest {
 
     @Test
     void createUser_ShouldReturnCreatedUser() throws Exception {
-        CreateUserDto createDto =
-                CreateUserDto.builder()
-                        .name("John")
-                        .email("john@test.com")
-                        .age(25)
-                        .build();
+        CreateUserDto createDto = CreateUserDto.builder()
+                .name("John")
+                .email("john@test.com")
+                .age(25)
+                .build();
 
-        GetUserDto responseDto =
-                GetUserDto.builder()
-                        .id(1L)
-                        .name("John")
-                        .email("john@test.com")
-                        .age(25)
-                        .created_at(LocalDate.now())
-                        .build();
+        GetUserDto responseDto = GetUserDto.builder()
+                .id(1L)
+                .name("John")
+                .email("john@test.com")
+                .age(25)
+                .created_at(LocalDate.now())
+                .build();
 
         when(userFacade.create(any(CreateUserDto.class))).thenReturn(responseDto);
 
@@ -65,17 +67,18 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("John"))
                 .andExpect(jsonPath("$.email").value("john@test.com"))
-                .andExpect(jsonPath("$.age").value(25));
+                .andExpect(jsonPath("$.age").value(25))
+                .andExpect(jsonPath("$.links[0].rel").value("self"))
+                .andExpect(jsonPath("$.links[1].rel").value("users"));
     }
 
     @Test
     void createUser_WithDuplicateEmail_ShouldReturnConflict() throws Exception {
-        CreateUserDto createDto =
-                CreateUserDto.builder()
-                        .name("John")
-                        .email("existing@test.com")
-                        .age(25)
-                        .build();
+        CreateUserDto createDto = CreateUserDto.builder()
+                .name("John")
+                .email("existing@test.com")
+                .age(25)
+                .build();
 
         when(userFacade.create(any(CreateUserDto.class)))
                 .thenThrow(new DuplicateEmailException("Email already exists: existing@test.com"));
@@ -89,12 +92,11 @@ class UserControllerTest {
 
     @Test
     void createUser_WithInvalidAge_ShouldReturnBadRequest() throws Exception {
-        CreateUserDto createDto =
-                CreateUserDto.builder()
-                        .name("John")
-                        .email("john@test.com")
-                        .age(-5)
-                        .build();
+        CreateUserDto createDto = CreateUserDto.builder()
+                .name("John")
+                .email("john@test.com")
+                .age(-5)
+                .build();
 
         mockMvc.perform(post(baseUrl)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -104,47 +106,50 @@ class UserControllerTest {
 
     @Test
     void readAllUsers_ShouldReturnListOfUsers() throws Exception {
-        GetUserDto user1 =
-                GetUserDto.builder()
-                        .id(1L)
-                        .name("John")
-                        .email("john@test.com")
-                        .age(25)
-                        .build();
+        GetUserDto user1 = GetUserDto.builder()
+                .id(1L)
+                .name("John")
+                .email("john@test.com")
+                .age(25)
+                .build();
 
-        GetUserDto user2 =
-                GetUserDto.builder()
-                        .id(2L)
-                        .name("Alice")
-                        .email("alice@test.com")
-                        .age(30)
-                        .build();
+        GetUserDto user2 = GetUserDto.builder()
+                .id(2L)
+                .name("Alice")
+                .email("alice@test.com")
+                .age(30)
+                .build();
 
         when(userFacade.findAll()).thenReturn(List.of(user1, user2));
 
         mockMvc.perform(get(baseUrl))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("John"))
-                .andExpect(jsonPath("$[1].name").value("Alice"));
+                // Проверяем элементы внутри массива "content"
+                .andExpect(jsonPath("$.content[0].name").value("John"))
+                .andExpect(jsonPath("$.content[1].name").value("Alice"))
+                // Проверяем, что у первого пользователя сгенерировались ссылки
+                .andExpect(jsonPath("$.content[0].links[0].rel").value("self"))
+                .andExpect(jsonPath("$.content[0].links[1].rel").value("users"));
     }
 
     @Test
     void readUserById_WhenExists_ShouldReturnUser() throws Exception {
-        GetUserDto responseDto =
-                GetUserDto.builder()
-                        .id(1L)
-                        .name("John")
-                        .email("john@test.com")
-                        .age(25)
-                        .created_at(LocalDate.now())
-                        .build();
+        GetUserDto responseDto = GetUserDto.builder()
+                .id(1L)
+                .name("John")
+                .email("john@test.com")
+                .age(25)
+                .created_at(LocalDate.now())
+                .build();
 
         when(userFacade.findById(1L)).thenReturn(responseDto);
 
         mockMvc.perform(get(baseUrl + "/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("John"));
+                .andExpect(jsonPath("$.name").value("John"))
+                .andExpect(jsonPath("$.links[0].rel").value("self"))
+                .andExpect(jsonPath("$.links[1].rel").value("users"));
     }
 
     @Test
@@ -159,19 +164,17 @@ class UserControllerTest {
 
     @Test
     void partialUpdateUser_WhenExists_ShouldReturnUpdatedUser() throws Exception {
-        PartiallyUpdateUserDto updateDto =
-                PartiallyUpdateUserDto.builder()
-                        .name("John Updated")
-                        .build();
+        PartiallyUpdateUserDto updateDto = PartiallyUpdateUserDto.builder()
+                .name("John Updated")
+                .build();
 
-        GetUserDto responseDto =
-                GetUserDto.builder()
-                        .id(1L)
-                        .name("John Updated")
-                        .email("john@test.com")
-                        .age(25)
-                        .created_at(LocalDate.now())
-                        .build();
+        GetUserDto responseDto = GetUserDto.builder()
+                .id(1L)
+                .name("John Updated")
+                .email("john@test.com")
+                .age(25)
+                .created_at(LocalDate.now())
+                .build();
 
         when(userFacade.updatePartially(eq(1L), any(PartiallyUpdateUserDto.class))).thenReturn(responseDto);
 
@@ -185,21 +188,19 @@ class UserControllerTest {
 
     @Test
     void fullUpdateUser_WhenExists_ShouldReturnUpdatedUser() throws Exception {
-        FullyUpdateUserDto updateDto =
-                FullyUpdateUserDto.builder()
-                        .name("John Full")
-                        .email("johnfull@test.com")
-                        .age(30)
-                        .build();
+        FullyUpdateUserDto updateDto = FullyUpdateUserDto.builder()
+                .name("John Full")
+                .email("johnfull@test.com")
+                .age(30)
+                .build();
 
-        GetUserDto responseDto =
-                GetUserDto.builder()
-                        .id(1L)
-                        .email("johnfull@test.com")
-                        .name("John Full")
-                        .age(30)
-                        .created_at(LocalDate.now())
-                        .build();
+        GetUserDto responseDto = GetUserDto.builder()
+                .id(1L)
+                .email("johnfull@test.com")
+                .name("John Full")
+                .age(30)
+                .created_at(LocalDate.now())
+                .build();
 
         when(userFacade.updateFully(eq(1L), any(FullyUpdateUserDto.class))).thenReturn(responseDto);
 
