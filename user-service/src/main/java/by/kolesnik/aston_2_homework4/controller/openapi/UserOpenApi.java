@@ -10,11 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "User controller", description = "This controller allows performing CRUD operations on users")
 public interface UserOpenApi {
@@ -30,14 +29,24 @@ public interface UserOpenApi {
                     responseCode = "200",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GetUserDto.class),
+                            schema = @Schema(implementation = UserModel.class),
                             examples = @ExampleObject("""
                                     {
                                          "id": 29,
                                          "name": "John",
                                          "email": "john@list.ru",
                                          "age": 25,
-                                         "created_at": "2026-09-11"
+                                         "created_at": "2026-09-11",
+                                         "links": [
+                                             {
+                                               "rel": "self",
+                                               "href": "http://localhost:8080/users/29"
+                                             },
+                                             {
+                                               "rel": "users",
+                                               "href": "http://localhost:8080/users"
+                                             }
+                                           ]
                                      }
                                     """)
                     )
@@ -69,7 +78,7 @@ public interface UserOpenApi {
                     )
             )
     })
-    GetUserDto create(@RequestBody @Valid CreateUserDto dto);
+    UserModel create(@RequestBody @Valid CreateUserDto dto);
 
     @Operation(
             method = "GET",
@@ -82,7 +91,7 @@ public interface UserOpenApi {
                     responseCode = "200",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            array = @ArraySchema(schema = @Schema(implementation = GetUserDto.class)),
+                            array = @ArraySchema(schema = @Schema(implementation = UserModel.class)),
                             examples = @ExampleObject("""
                                     [
                                           {
@@ -90,28 +99,58 @@ public interface UserOpenApi {
                                               "name": "Alex",
                                               "email": "alex@gmail.com",
                                               "age": 24,
-                                              "created_at": "2026-08-28"
+                                              "created_at": "2026-08-28",
+                                              "links": [
+                                                  {
+                                                    "rel": "self",
+                                                    "href": "http://localhost:8080/users/1"
+                                                  },
+                                                  {
+                                                    "rel": "users",
+                                                    "href": "http://localhost:8080/users"
+                                                  }
+                                                ]
                                           },
                                           {
                                               "id": 2,
                                               "name": "Alis",
                                               "email": "elis4@list.ru",
                                               "age": 26,
-                                              "created_at": "2026-08-28"
+                                              "created_at": "2026-08-28",
+                                              "links": [
+                                                  {
+                                                    "rel": "self",
+                                                    "href": "http://localhost:8080/users/2"
+                                                  },
+                                                  {
+                                                    "rel": "users",
+                                                    "href": "http://localhost:8080/users"
+                                                  }
+                                                ]
                                           },
                                           {
                                               "id": 3,
                                               "name": "John",
                                               "email": "john@list.ru",
                                               "age": 25,
-                                              "created_at": "2026-09-11"
+                                              "created_at": "2026-09-11",
+                                              "links": [
+                                                  {
+                                                    "rel": "self",
+                                                    "href": "http://localhost:8080/users/3"
+                                                  },
+                                                  {
+                                                    "rel": "users",
+                                                    "href": "http://localhost:8080/users"
+                                                  }
+                                                ]
                                           }
                                       ]
                                     """)
                     )
             )
     })
-    List<GetUserDto> readAll();
+    CollectionModel<UserModel> readAll();
 
     @Operation(
             method = "GET",
@@ -124,14 +163,24 @@ public interface UserOpenApi {
                     responseCode = "200",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GetUserDto.class),
+                            schema = @Schema(implementation = UserModel.class),
                             examples = @ExampleObject("""
                                     {
                                          "id": 29,
                                          "name": "John",
                                          "email": "john@list.ru",
                                          "age": 25,
-                                         "created_at": "2026-09-11"
+                                         "created_at": "2026-09-11",
+                                         "links": [
+                                             {
+                                               "rel": "self",
+                                               "href": "http://localhost:8080/users/29"
+                                             },
+                                             {
+                                               "rel": "users",
+                                               "href": "http://localhost:8080/users"
+                                             }
+                                           ]
                                      }
                                     """)
                     )
@@ -163,7 +212,7 @@ public interface UserOpenApi {
                     )
             )
     })
-    GetUserDto readById(@PathVariable Long id);
+    UserModel readById(@PathVariable Long id);
 
     @Operation(
             method = "PATCH",
@@ -176,14 +225,24 @@ public interface UserOpenApi {
                     responseCode = "200",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GetUserDto.class),
+                            schema = @Schema(implementation = UserModel.class),
                             examples = @ExampleObject("""
                                     {
                                          "id": 29,
                                          "name": "John",
                                          "email": "john@mail.ru",
                                          "age": 25,
-                                         "created_at": "2026-09-11"
+                                         "created_at": "2026-09-11",
+                                         "links": [
+                                             {
+                                               "rel": "self",
+                                               "href": "http://localhost:8080/users/29"
+                                             },
+                                             {
+                                               "rel": "users",
+                                               "href": "http://localhost:8080/users"
+                                             }
+                                           ]
                                      }
                                     """)
                     )
@@ -243,7 +302,7 @@ public interface UserOpenApi {
                     )
             )
     })
-    GetUserDto updatePartially(@PathVariable Long id, @RequestBody @Valid PartiallyUpdateUserDto dto);
+    UserModel updatePartially(@PathVariable Long id, @RequestBody @Valid PartiallyUpdateUserDto dto);
 
     @Operation(
             method = "PUT",
@@ -256,14 +315,24 @@ public interface UserOpenApi {
                     responseCode = "200",
                     content = @Content(
                             mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = GetUserDto.class),
+                            schema = @Schema(implementation = UserModel.class),
                             examples = @ExampleObject("""
                                     {
                                          "id": 29,
                                          "name": "Harry",
                                          "email": "harry@list.ru",
                                          "age": 27,
-                                         "created_at": "2026-09-11"
+                                         "created_at": "2026-09-11",
+                                         "links": [
+                                             {
+                                               "rel": "self",
+                                               "href": "http://localhost:8080/users/29"
+                                             },
+                                             {
+                                               "rel": "users",
+                                               "href": "http://localhost:8080/users"
+                                             }
+                                           ]
                                      }
                                     """)
                     )
@@ -323,7 +392,7 @@ public interface UserOpenApi {
                     )
             )
     })
-    GetUserDto updateFully(@PathVariable Long id, @RequestBody @Valid FullyUpdateUserDto dto);
+    UserModel updateFully(@PathVariable Long id, @RequestBody @Valid FullyUpdateUserDto dto);
 
     @Operation(
             method = "DELETE",
