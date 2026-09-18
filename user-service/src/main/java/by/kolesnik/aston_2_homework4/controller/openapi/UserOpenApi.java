@@ -40,11 +40,11 @@ public interface UserOpenApi {
                                          "links": [
                                              {
                                                "rel": "self",
-                                               "href": "http://localhost:8080/users/29"
+                                               "href": "http://176.46.65.1:8081/users/29"
                                              },
                                              {
                                                "rel": "users",
-                                               "href": "http://localhost:8080/users"
+                                               "href": "http://176.46.65.1:8081/users"
                                              }
                                            ]
                                      }
@@ -103,11 +103,11 @@ public interface UserOpenApi {
                                               "links": [
                                                   {
                                                     "rel": "self",
-                                                    "href": "http://localhost:8080/users/1"
+                                                    "href": "http://176.46.65.1:8081/users/1"
                                                   },
                                                   {
                                                     "rel": "users",
-                                                    "href": "http://localhost:8080/users"
+                                                    "href": "http://176.46.65.1:8081/users"
                                                   }
                                                 ]
                                           },
@@ -120,11 +120,11 @@ public interface UserOpenApi {
                                               "links": [
                                                   {
                                                     "rel": "self",
-                                                    "href": "http://localhost:8080/users/2"
+                                                    "href": "http://176.46.65.1:8081/users/2"
                                                   },
                                                   {
                                                     "rel": "users",
-                                                    "href": "http://localhost:8080/users"
+                                                    "href": "http://176.46.65.1:8081/users"
                                                   }
                                                 ]
                                           },
@@ -137,11 +137,11 @@ public interface UserOpenApi {
                                               "links": [
                                                   {
                                                     "rel": "self",
-                                                    "href": "http://localhost:8080/users/3"
+                                                    "href": "http://176.46.65.1:8081/users/3"
                                                   },
                                                   {
                                                     "rel": "users",
-                                                    "href": "http://localhost:8080/users"
+                                                    "href": "http://176.46.65.1:8081/users"
                                                   }
                                                 ]
                                           }
@@ -174,11 +174,11 @@ public interface UserOpenApi {
                                          "links": [
                                              {
                                                "rel": "self",
-                                               "href": "http://localhost:8080/users/29"
+                                               "href": "http://176.46.65.1:8081/users/29"
                                              },
                                              {
                                                "rel": "users",
-                                               "href": "http://localhost:8080/users"
+                                               "href": "http://176.46.65.1:8081/users"
                                              }
                                            ]
                                      }
@@ -236,11 +236,11 @@ public interface UserOpenApi {
                                          "links": [
                                              {
                                                "rel": "self",
-                                               "href": "http://localhost:8080/users/29"
+                                               "href": "http://176.46.65.1:8081/users/29"
                                              },
                                              {
                                                "rel": "users",
-                                               "href": "http://localhost:8080/users"
+                                               "href": "http://176.46.65.1:8081/users"
                                              }
                                            ]
                                      }
@@ -326,11 +326,11 @@ public interface UserOpenApi {
                                          "links": [
                                              {
                                                "rel": "self",
-                                               "href": "http://localhost:8080/users/29"
+                                               "href": "http://176.46.65.1:8081/users/29"
                                              },
                                              {
                                                "rel": "users",
-                                               "href": "http://localhost:8080/users"
+                                               "href": "http://176.46.65.1:8081/users"
                                              }
                                            ]
                                      }
