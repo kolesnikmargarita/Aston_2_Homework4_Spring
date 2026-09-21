@@ -20,7 +20,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-server</artifactId>
-            <!-- Никаких тегов <version> здесь писать НЕ НАДО. Maven сам возьмет её из импортированного в корень BOM -->
         </dependency>
     </dependencies>
 
