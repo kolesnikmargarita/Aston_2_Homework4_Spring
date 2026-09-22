@@ -4,12 +4,6 @@ server:
 spring:
   cloud:
     gateway:
-      # Настройка динамической маршрутизации на основе имен в Eureka
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true # Имена сервисов в URL будут в нижнем регистре
-
       # Явные маршруты с предохранителем (Circuit Breaker)
       server:
         webflux:
