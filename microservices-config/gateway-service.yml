@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      # Явные маршруты с предохранителем (Circuit Breaker)
+      server:
+        webflux:
+          routes:
+            - id: user-service-route
+              uri: lb://user-service
+              predicates:
+                - Path=/users, /users/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: userServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/user-fallback # Куда отправить запрос при сбое
+                    resumeWithoutError: true
+          
+
+# Настройка тайм-аутов для Circuit Breaker (Resilience4j)
+resilience4j:
+  circuitbreaker:
+    instances:
+      userServiceCircuitBreaker:
+        slidingWindowSize: 30
+        failureRateThreshold: 50 # Если 50% запросов упали, закрываем путь к сервису
+        waitDurationInOpenState: 30s # Ждать 30 секунд перед повторной проверкой сервиса
+        permittedNumberOfCallsInHalfOpenState: 3
+  timelimiter:
+    instances:
+      userServiceCircuitBreaker:
+        timeoutDuration: 3s # Если сервис не отвечает дольше 3 секунд — это считается сбоем
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
