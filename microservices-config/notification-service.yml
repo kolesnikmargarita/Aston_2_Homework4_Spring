@@ -4,9 +4,8 @@ spring:
   application:
     name: notification-service
   kafka:
-
+    bootstrap-servers: kafka:9092
     consumer:
-      bootstrap-servers: localhost:9092
       group-id: notification-service
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -30,3 +29,8 @@ spring:
 app:
   kafka:
     topic: users.events
+
+eureka:
+  instance:
+    prefer-ip-address: false
+    hostname: notification-service
