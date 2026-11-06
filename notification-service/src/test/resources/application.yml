@@ -10,3 +10,11 @@ spring:
       properties:
         # ПРАВИЛЬНО: Ключ пишется целиком в кавычках через точки
         "spring.json.trusted.packages": "by.kolesnik.aston_2_homework4.dto"
+  cloud:
+    # Отключаем обязательный поиск Config Server при старте тестов
+    config:
+      enabled: false
+eureka:
+  client:
+    # Отключаем регистрацию в Eureka в момент прогона тестов
+    enabled: false
