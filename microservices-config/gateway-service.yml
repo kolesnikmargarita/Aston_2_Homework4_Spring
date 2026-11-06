@@ -37,4 +37,5 @@ resilience4j:
 
 eureka:
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
+    hostname: gateway-service
